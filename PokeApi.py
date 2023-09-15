@@ -5,15 +5,25 @@ import json
 nomes_pokemon = ["Pikachu", "34", "bulbasaur", "squirtle", "jigglypuff"]
 
 class Pokemons:
-    def __init__(self,poke_name):
-        self.poke_id = poke_name
+    def __init__(self,poke_id):
+        self.poke_id = poke_id
         self.poke_json = Pokemons.get_infos(self)
+        self.poke_name = self.poke_json['name']
+        
+        
+        #temp
+        with open('testes.json', 'w') as teste:
+            json.dump(self.poke_json, teste, indent=4)
+        
+        
         Pokemons.poke_photo(self)
     
     
     def poke_photo(self):
         photo_link = self.poke_json['sprites']['other']['home']['front_default']
-        print(photo_link)
+        
+        res = requests.get(photo_link)
+        print(res)
     
     
     def get_infos(self): 
