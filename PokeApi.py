@@ -4,10 +4,10 @@ import json
 
 nomes_pokemon = ["Pikachu", "34", "bulbasaur", "squirtle", "jigglypuff"]
 
-class Pokemons:
+class Pokemon:
     def __init__(self,poke_id):
         self.poke_id = poke_id
-        self.poke_json = Pokemons.get_infos(self)
+        self.poke_json = Pokemon.get_infos(self)
         self.poke_name = self.poke_json['name']
         
         
@@ -40,4 +40,4 @@ class Pokemons:
         
         
 for pokemon in nomes_pokemon:
-    Pokemons(pokemon)
+    Pokemon(pokemon)
