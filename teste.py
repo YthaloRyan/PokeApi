@@ -2,8 +2,14 @@ import requests
 import os
 import json
 
-res = requests.get('https://pokeapi.co/api/v2/pokemon/10271/',
-                   params={'limit': '10000'})
+#URL para pegar evolution chain
+# res = requests.get('https://pokeapi.co/api/v2/pokemon-species/charizard/')
+res = requests.get('https://pokeapi.co/api/v2/pokedex/2/')
+
+print(res)
+
+#URL para pegar a linha de evolucao do pokemon
+res2 = requests.get('https://pokeapi.co/api/v2/evolution-chain/2/')
 
 print(res)
 print(res.json())

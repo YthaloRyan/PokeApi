@@ -3,7 +3,7 @@ from pprint import pprint
 import os
 import time
 
-nomes_pokemon = [150]
+nomes_pokemon = [i for i in range(1,10)]
 
 #Get current directory
 global cur_dir
@@ -16,17 +16,16 @@ if not os.path.exists(pokes_dir):
 
 class Pokemon:
     def __init__(self,poke_id):
+        self.error_check = False
+        
         #Request Archives
         self.poke_id = poke_id
         self.poke_json = Pokemon.get_infos(self)
         if self.poke_json is None:
             return None
         
-        #Pokemon image and infromatios
+        #Pokemon name
         self.poke_name = self.poke_json['name'].capitalize()
-        self.poke_image = Pokemon.poke_photo(self)
-        if self.poke_image is None:
-            return None
         
         #Main folder
         self.alpha_poke_folder = os.path.join(cur_dir, 'pokemons', self.poke_name[0])
@@ -34,10 +33,18 @@ class Pokemon:
         
         #Create a folder for pokemon and save
         Pokemon.make_poke_dir(self)
-          
-        #temp
-        # with open('testes.json', 'w') as teste:
-        #     json.dump(self.poke_json, teste, indent=4)
+        
+        #Check
+        if self.error_check == True:
+            return None
+        
+        #Catch the photo
+        self.poke_image = Pokemon.poke_photo(self)
+        if self.poke_image is None:
+            return None
+        
+        #Save the informations
+        Pokemon.save_poke_infos(self)
             
         
     def poke_photo(self):
@@ -68,10 +75,9 @@ class Pokemon:
         if not os.path.exists(poke_folder):
             os.mkdir(poke_folder)
             
-            #Save all information
-            Pokemon.save_poke_infos(self)
         else:
             print(f'The folder {self.poke_name} already exists.')
+            self.error_check = True
             
             
     def save_poke_infos(self):
@@ -99,8 +105,9 @@ class Pokemon:
             print(f"Um erro ocorreu durante a solicitação: {e}")
                     
         
-for pokemon in nomes_pokemon:
-    Pokemon(str(pokemon))
+# for pokemon in nomes_pokemon:
+#     Pokemon(str(pokemon))
+Pokemon(str(745))
     
 print('exiting...')
 time.sleep(3)
