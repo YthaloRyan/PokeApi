@@ -19,7 +19,7 @@ class Pokemon:
         self.error_check = False
         
         #Request Archives
-        self.poke_id = poke_id
+        self.poke_id = str(poke_id)
         self.poke_json = Pokemon.get_infos(self)
         if self.poke_json is None:
             return None
@@ -98,16 +98,16 @@ class Pokemon:
             if res.status_code == 200:
                 return res.json()
             else:
-                print(f"A solicitação falhou com o código de status: {res.status_code}")
+                print(f"Error: {res.status_code}")
                 return None
                 
         except requests.exceptions.RequestException as e:
             print(f"Um erro ocorreu durante a solicitação: {e}")
                     
         
-# for pokemon in nomes_pokemon:
-#     Pokemon(str(pokemon))
-Pokemon(str(745))
+for pokemon in nomes_pokemon:
+    Pokemon(str(pokemon))
+
     
 print('exiting...')
 time.sleep(3)
