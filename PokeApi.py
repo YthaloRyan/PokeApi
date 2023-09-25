@@ -31,8 +31,11 @@ class Pokemon:
         self.alpha_poke_folder = os.path.join(cur_dir, 'pokemons', self.poke_name[0])
         self.poke_folder = os.path.join(self.alpha_poke_folder, self.poke_name)
         
-        #Create a folder for pokemon and save
+        #Create a folder for pokemon
         Pokemon.make_poke_dir(self)
+        
+        #tmp
+        Saver.save_infos(self)
         
         #Check
         if self.error_check == True:
@@ -44,7 +47,7 @@ class Pokemon:
             return None
         
         #Save the informations
-        Pokemon.save_poke_infos(self)
+        Saver.save(self)
             
         
     def poke_photo(self):
@@ -78,17 +81,7 @@ class Pokemon:
         else:
             print(f'The folder {self.poke_name} already exists.')
             self.error_check = True
-            
-            
-    def save_poke_infos(self):
-        poke_folder = self.poke_folder
-           
-        #Save image
-        with open(f'{poke_folder}\{self.poke_name}.png', "wb") as file:
-            file.write(self.poke_image)
-            
-        print(f'{self.poke_name} saved successfully.')
-    
+              
     
     def get_infos(self):
         #Get informations from the api
@@ -103,11 +96,111 @@ class Pokemon:
                 
         except requests.exceptions.RequestException as e:
             print(f"Um erro ocorreu durante a solicitação: {e}")
+            
+
+class Saver(Pokemon):
+    def save(self):
+        Saver.save_image(self)
+        Saver.save_infos(self)
+    
+    
+    def save_image(self):
+        poke_folder = self.poke_folder
+            
+        #Save image
+        with open(f'{poke_folder}\{self.poke_name}.png', "wb") as file:
+            file.write(self.poke_image)
+            
+        print(f'{self.poke_name} saved successfully.')
+        
+    
+    def save_infos(self):
+        self.types_url = []
+        poke_folder = self.poke_folder
+        json = self.poke_json
+        
+        pokedex = {}
+        infos = []
+        types = []
+        
+        
+        pokedex['name'] = self.poke_name
+        
+        
+        infos.append(f'{json["height"]/10} m')
+        infos.append(f'{json["weight"]/10} kg')
+        
+        pokedex['infos'] = infos
+        
+        pokedex['abilities'] = []
+        
+        for abi in json['abilities']:
+            if abi['is_hidden'] == False:
+                pokedex['abilities'].append(abi['ability'])
+                
+        
+        
+        
+        pokedex['gender'] = Pokedex_infos.get_gender(self)
+        for type in json['types']:
+            types.append(type['type']['name'].capitalize())
+            self.types_url.append(type['type']['url'])
+        
+        pokedex['types'] = types
+
+        Pokedex_infos.get_buffs_debuffs(self)
+        # print(infos)
+        # print(pokedex)
+        
+
+class Pokedex_infos(Saver):
+    def get_gender(self):
+        dict_genders = {
+            1: 'M',
+            2: 'F'
+        }
+        
+        list_gender = []
+        for i in range(1,3):
+            gender_json = requests.get(f'https://pokeapi.co/api/v2/gender/{i}/').json()
+            
+            for pokemon in gender_json['pokemon_species_details']:
+                if pokemon['pokemon_species']['name'] == self.poke_name.lower():
+                    list_gender.append(dict_genders[i])
+        
+        if not list_gender:
+            return 'Unknown'
+        else:
+            return '/'.join(list_gender)
+        
+    
+    def get_buffs_debuffs(self):
+        infos = {
+            0: 'double_damage_from',
+            1: 'double_damage_to'
+        }
+        
+        
+        def loop(json_infos):
+            for item in json_infos:
+                print(item['name'])
+        #Take the infos
+        for url in self.types_url:
+            types_json = requests.get(url).json()
+            
+            
+            buff_list = [loop(types_json['damage_relations']['double_damage_to'])]
+            debuff_list = [loop(types_json['damage_relations']['double_damage_from'])]
+            
+                
+        
+    
+                
                     
         
-for pokemon in nomes_pokemon:
-    Pokemon(str(pokemon))
+# for pokemon in nomes_pokemon:
+#     Pokemon(str(pokemon))
 
-    
+Pokemon((144))
 print('exiting...')
 time.sleep(3)
