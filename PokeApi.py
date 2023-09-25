@@ -35,8 +35,8 @@ class Pokemon:
         Pokemon.make_poke_dir(self)
         
         #tmp
-        Saver.save_infos(self)
         
+          
         #Check
         if self.error_check == True:
             return None
@@ -121,7 +121,7 @@ class Saver(Pokemon):
         
         pokedex = {}
         infos = []
-        types = []
+        self.types = []
         
         
         pokedex['name'] = self.poke_name
@@ -137,20 +137,20 @@ class Saver(Pokemon):
         for abi in json['abilities']:
             if abi['is_hidden'] == False:
                 pokedex['abilities'].append(abi['ability'])
-                
-        
+  
         
         
         pokedex['gender'] = Pokedex_infos.get_gender(self)
         for type in json['types']:
-            types.append(type['type']['name'].capitalize())
+            self.types.append(type['type']['name'].capitalize())
             self.types_url.append(type['type']['url'])
         
-        pokedex['types'] = types
+        pokedex['types'] = self.types
 
-        Pokedex_infos.get_buffs_debuffs(self)
-        # print(infos)
-        # print(pokedex)
+        pokedex['defensive_offensive'] = Pokedex_infos.get_buffs_debuffs(self)
+        
+        print(infos)
+        print(pokedex)
         
 
 class Pokedex_infos(Saver):
@@ -175,32 +175,37 @@ class Pokedex_infos(Saver):
         
     
     def get_buffs_debuffs(self):
-        infos = {
-            0: 'double_damage_from',
-            1: 'double_damage_to'
+        damages_defenses = {
+            'defensive': {
+                'double_damage_from': [],
+                'half_damage_from': []
+            },
+            'offensive': {
+                'double_damage_to': [],
+                'half_damage_to': []
+            }   
         }
         
-        
         def loop(json_infos):
+            tmp = []
             for item in json_infos:
-                print(item['name'])
-        #Take the infos
+                name = item['name']
+                tmp.append(name.capitalize())
+            
+            return tmp
+        
         for url in self.types_url:
             types_json = requests.get(url).json()
             
-            
-            buff_list = [loop(types_json['damage_relations']['double_damage_to'])]
-            debuff_list = [loop(types_json['damage_relations']['double_damage_from'])]
-            
+            for form in damages_defenses:
+                for char in damages_defenses[form]:
+                    damages_defenses[form][char].append(loop(types_json['damage_relations'][char]))
                 
-        
-    
-                
-                    
-        
+        return damages_defenses
+            
 # for pokemon in nomes_pokemon:
 #     Pokemon(str(pokemon))
 
-Pokemon((144))
+Pokemon((40))
 print('exiting...')
 time.sleep(3)

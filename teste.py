@@ -16,6 +16,8 @@ res = requests.get('https://pokeapi.co/api/v2/pokemon-species/25/')
 
 #URL type
 res = requests.get('https://pokeapi.co/api/v2/type/3/')
+res2 = requests.get('https://pokeapi.co/api/v2/type/15/')
+
 
 
 
@@ -24,5 +26,8 @@ res = requests.get('https://pokeapi.co/api/v2/type/3/')
 
 print(res)
 
-with open('testes.json', 'w') as teste:
+with open('res.json', 'w') as teste:
     json.dump(res.json(), teste, indent=4)
+    
+with open('res2.json', 'w') as teste:
+    json.dump(res2.json(), teste, indent=4)
