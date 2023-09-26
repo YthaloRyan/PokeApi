@@ -38,8 +38,8 @@ class Pokemon:
         
           
         #Check
-        if self.error_check == True:
-            return None
+        # if self.error_check == True:
+        #     return None
         
         #Catch the photo
         self.poke_image = Pokemon.poke_photo(self)
@@ -115,59 +115,70 @@ class Saver(Pokemon):
         
     
     def save_infos(self):
+        
         self.types_url = []
         poke_folder = self.poke_folder
         json = self.poke_json
         
+        #pokedex infos
         pokedex = {}
         infos = []
         self.types = []
         
-        
+        #Name
         pokedex['name'] = self.poke_name
         
-        
+        #Height and Weight
         infos.append(f'{json["height"]/10} m')
         infos.append(f'{json["weight"]/10} kg')
-        
         pokedex['infos'] = infos
         
+        #Abilities
         pokedex['abilities'] = []
-        
         for abi in json['abilities']:
             if abi['is_hidden'] == False:
                 pokedex['abilities'].append(abi['ability'])
   
-        
-        
+        #Gender
         pokedex['gender'] = Pokedex_infos.get_gender(self)
+        
+        #Types
         for type in json['types']:
             self.types.append(type['type']['name'].capitalize())
             self.types_url.append(type['type']['url'])
-        
         pokedex['types'] = self.types
 
+        #Defensive and Offensive
         pokedex['defensive_offensive'] = Pokedex_infos.get_buffs_debuffs(self)
         
-        print(infos)
-        print(pokedex)
+        Pokedex_infos.evolution_chain(self)
+        
+        
+        
+        # print(infos)
+        # print(pokedex)
         
 
 class Pokedex_infos(Saver):
     def get_gender(self):
+        #Genders
         dict_genders = {
             1: 'M',
             2: 'F'
         }
         
+        #Catch Gender
         list_gender = []
         for i in range(1,3):
+            #Json
             gender_json = requests.get(f'https://pokeapi.co/api/v2/gender/{i}/').json()
             
+            #Catcher
             for pokemon in gender_json['pokemon_species_details']:
                 if pokemon['pokemon_species']['name'] == self.poke_name.lower():
                     list_gender.append(dict_genders[i])
         
+        #Last Check
         if not list_gender:
             return 'Unknown'
         else:
@@ -175,6 +186,7 @@ class Pokedex_infos(Saver):
         
     
     def get_buffs_debuffs(self):
+        #infos
         damages_defenses = {
             'defensive': {
                 'double_damage_from': [],
@@ -187,25 +199,31 @@ class Pokedex_infos(Saver):
         }
         
         def loop(json_infos):
+            #info list maker
             tmp = []
             for item in json_infos:
                 name = item['name']
                 tmp.append(name.capitalize())
-            
             return tmp
         
+        #Requests types url
         for url in self.types_url:
             types_json = requests.get(url).json()
             
+            #Save the infos
             for form in damages_defenses:
                 for char in damages_defenses[form]:
                     damages_defenses[form][char].append(loop(types_json['damage_relations'][char]))
-                
+        
         return damages_defenses
+    
+    def evolution_chain(self):
+        res = requests.get('https://pokeapi.co/api/v2/pokemon-species/25/').json()
+        print(res)
             
 # for pokemon in nomes_pokemon:
 #     Pokemon(str(pokemon))
 
-Pokemon((40))
+Pokemon((25))
 print('exiting...')
 time.sleep(3)
