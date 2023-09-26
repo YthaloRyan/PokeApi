@@ -1,0 +1,85 @@
+{
+    "name": "Ivysaur",
+    "infos": [
+        "1.0 m",
+        "13.0 kg"
+    ],
+    "abilities": [
+        {
+            "name": "overgrow",
+            "url": "https://pokeapi.co/api/v2/ability/65/"
+        }
+    ],
+    "gender": "M/F",
+    "types": [
+        "Grass",
+        "Poison"
+    ],
+    "defensive_offensive": {
+        "defensive": {
+            "double_damage_from": [
+                [
+                    "Flying",
+                    "Poison",
+                    "Bug",
+                    "Fire",
+                    "Ice"
+                ],
+                [
+                    "Ground",
+                    "Psychic"
+                ]
+            ],
+            "half_damage_from": [
+                [
+                    "Ground",
+                    "Water",
+                    "Grass",
+                    "Electric"
+                ],
+                [
+                    "Fighting",
+                    "Poison",
+                    "Bug",
+                    "Grass",
+                    "Fairy"
+                ]
+            ]
+        },
+        "offensive": {
+            "double_damage_to": [
+                [
+                    "Ground",
+                    "Rock",
+                    "Water"
+                ],
+                [
+                    "Grass",
+                    "Fairy"
+                ]
+            ],
+            "half_damage_to": [
+                [
+                    "Flying",
+                    "Poison",
+                    "Bug",
+                    "Steel",
+                    "Fire",
+                    "Grass",
+                    "Dragon"
+                ],
+                [
+                    "Poison",
+                    "Ground",
+                    "Rock",
+                    "Ghost"
+                ]
+            ]
+        }
+    },
+    "evolutions": [
+        "Bulbasaur",
+        "IVYSAUR",
+        "Venusaur"
+    ]
+}

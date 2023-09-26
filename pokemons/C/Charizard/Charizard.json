@@ -1,0 +1,82 @@
+{
+    "name": "Charizard",
+    "infos": [
+        "1.7 m",
+        "90.5 kg"
+    ],
+    "abilities": [
+        {
+            "name": "blaze",
+            "url": "https://pokeapi.co/api/v2/ability/66/"
+        }
+    ],
+    "gender": "M/F",
+    "types": [
+        "Fire",
+        "Flying"
+    ],
+    "defensive_offensive": {
+        "defensive": {
+            "double_damage_from": [
+                [
+                    "Ground",
+                    "Rock",
+                    "Water"
+                ],
+                [
+                    "Rock",
+                    "Electric",
+                    "Ice"
+                ]
+            ],
+            "half_damage_from": [
+                [
+                    "Bug",
+                    "Steel",
+                    "Fire",
+                    "Grass",
+                    "Ice",
+                    "Fairy"
+                ],
+                [
+                    "Fighting",
+                    "Bug",
+                    "Grass"
+                ]
+            ]
+        },
+        "offensive": {
+            "double_damage_to": [
+                [
+                    "Bug",
+                    "Steel",
+                    "Grass",
+                    "Ice"
+                ],
+                [
+                    "Fighting",
+                    "Bug",
+                    "Grass"
+                ]
+            ],
+            "half_damage_to": [
+                [
+                    "Rock",
+                    "Fire",
+                    "Water",
+                    "Dragon"
+                ],
+                [
+                    "Rock",
+                    "Steel",
+                    "Electric"
+                ]
+            ]
+        }
+    },
+    "evolutions": [
+        "Charmander",
+        "Charmeleon",
+        "CHARIZARD"
+    ]
+}

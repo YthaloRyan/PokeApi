@@ -3,7 +3,7 @@ import os
 import json
 
 #URL para pegar evolution chain
-res = requests.get('https://pokeapi.co/api/v2/pokemon-species/25/')
+# res = requests.get('https://pokeapi.co/api/v2/pokemon-species/25/')
 
 #URL padrao
 # res = requests.get('https://pokeapi.co/api/v2/pokemon/25/')
@@ -15,14 +15,15 @@ res = requests.get('https://pokeapi.co/api/v2/pokemon-species/25/')
 # res = requests.get('https://pokeapi.co/api/v2/gender/3/')
 
 #URL type
-res = requests.get('https://pokeapi.co/api/v2/type/3/')
-res2 = requests.get('https://pokeapi.co/api/v2/type/15/')
+# res = requests.get('https://pokeapi.co/api/v2/type/3/')
+# res2 = requests.get('https://pokeapi.co/api/v2/type/15/')
 
 
 
 
 #URL para pegar a linha de evolucao do pokemon
-# res2 = requests.get('https://pokeapi.co/api/v2/evolution-chain/2/')
+res = requests.get('https://pokeapi.co/api/v2/evolution-chain/21/')
+res2 = requests.get('https://pokeapi.co/api/v2/evolution-chain/10/')
 
 print(res)
 

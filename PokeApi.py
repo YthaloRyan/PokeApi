@@ -2,6 +2,7 @@ import requests
 from pprint import pprint
 import os
 import time
+import json
 
 nomes_pokemon = [i for i in range(1,10)]
 
@@ -100,16 +101,21 @@ class Pokemon:
 
 class Saver(Pokemon):
     def save(self):
-        Saver.save_image(self)
         Saver.save_infos(self)
+        Saver.save_image(self)
+        
     
     
     def save_image(self):
         poke_folder = self.poke_folder
             
         #Save image
-        with open(f'{poke_folder}\{self.poke_name}.png', "wb") as file:
-            file.write(self.poke_image)
+        with open(f'{poke_folder}\{self.poke_name}.png', "wb") as f:
+            f.write(self.poke_image)
+        
+        
+        with open(f'{poke_folder}\{self.poke_name}.json', 'w') as f:
+            json.dump(self.pokedex, f, indent=4)
             
         print(f'{self.poke_name} saved successfully.')
         
@@ -151,12 +157,10 @@ class Saver(Pokemon):
         #Defensive and Offensive
         pokedex['defensive_offensive'] = Pokedex_infos.get_buffs_debuffs(self)
         
-        Pokedex_infos.evolution_chain(self)
+        #Evolutions
+        pokedex['evolutions'] = Pokedex_infos.evolution_chain(self)       
         
-        
-        
-        # print(infos)
-        # print(pokedex)
+        self.pokedex = pokedex
         
 
 class Pokedex_infos(Saver):
@@ -218,12 +222,31 @@ class Pokedex_infos(Saver):
         return damages_defenses
     
     def evolution_chain(self):
-        res = requests.get('https://pokeapi.co/api/v2/pokemon-species/25/').json()
-        print(res)
+        res = requests.get(f'https://pokeapi.co/api/v2/pokemon-species/{self.poke_id}/').json()
+        evo_res = requests.get(res["evolution_chain"]['url']).json()
+        
+        evo = []
+        chain = evo_res['chain']
+        if 'envolves_to' in chain:
+            print('esdrvrever')
+        while 'evolves_to' in chain:
+            name = chain['species']['name'].capitalize()
             
-# for pokemon in nomes_pokemon:
-#     Pokemon(str(pokemon))
+            if name == self.poke_name:
+                evo.append(name.upper())
+            else:
+                evo.append(name)
+            chain = chain['evolves_to']
+            if not chain:
+                break
+            chain = chain[0]
+        
+        return evo
+            
+            
+for pokemon in nomes_pokemon:
+    Pokemon(pokemon)
 
-Pokemon((25))
+
 print('exiting...')
 time.sleep(3)
