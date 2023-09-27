@@ -1,10 +1,8 @@
 import requests
-from pprint import pprint
 import os
 import time
 import json
-
-nomes_pokemon = [i for i in range(1,10)]
+from shutil import rmtree
 
 #Get current directory
 global cur_dir
@@ -34,13 +32,10 @@ class Pokemon:
         
         #Create a folder for pokemon
         Pokemon.make_poke_dir(self)
-        
-        #tmp
-        
-          
-        #Check
-        # if self.error_check == True:
-        #     return None
+         
+        # Check
+        if self.error_check == True:
+            return None
         
         #Catch the photo
         self.poke_image = Pokemon.poke_photo(self)
@@ -76,12 +71,21 @@ class Pokemon:
             
         #Make the folder with Pokemon name
         poke_folder = self.poke_folder
-        if not os.path.exists(poke_folder):
+        if os.path.exists(poke_folder):
+            print(f'The folder {self.poke_name} already exists.')
+            
+            #Check of folder has 2 items
+            folder_archives = os.listdir(poke_folder)
+            if len(folder_archives) != 2:
+                #Remove folder
+                print('An error was encountered, recreating a folder.')
+                rmtree(poke_folder)
+                os.mkdir(poke_folder)
+            else:
+                self.error_check = True    
+        else:
             os.mkdir(poke_folder)
             
-        else:
-            print(f'The folder {self.poke_name} already exists.')
-            self.error_check = True
               
     
     def get_infos(self):
@@ -92,7 +96,10 @@ class Pokemon:
             if res.status_code == 200:
                 return res.json()
             else:
-                print(f"Error: {res.status_code}")
+                if res.status_code == 404:
+                    print('Pokemon Not Found.')
+                else:
+                    print(f"Error: {res.status_code}")
                 return None
                 
         except requests.exceptions.RequestException as e:
@@ -101,44 +108,40 @@ class Pokemon:
 
 class Saver(Pokemon):
     def save(self):
+        Saver.make_infos(self)
         Saver.save_infos(self)
-        Saver.save_image(self)
         
     
     
-    def save_image(self):
+    def save_infos(self):
         poke_folder = self.poke_folder
             
         #Save image
         with open(f'{poke_folder}\{self.poke_name}.png', "wb") as f:
             f.write(self.poke_image)
         
-        
+        #Save Json
         with open(f'{poke_folder}\{self.poke_name}.json', 'w') as f:
             json.dump(self.pokedex, f, indent=4)
             
         print(f'{self.poke_name} saved successfully.')
         
     
-    def save_infos(self):
-        
+    def make_infos(self):
         self.types_url = []
-        poke_folder = self.poke_folder
         json = self.poke_json
         
         #pokedex infos
         pokedex = {}
-        infos = []
         self.types = []
         
         #Name
         pokedex['name'] = self.poke_name
         
         #Height and Weight
-        infos.append(f'{json["height"]/10} m')
-        infos.append(f'{json["weight"]/10} kg')
-        pokedex['infos'] = infos
-        
+        pokedex['infos'] = [f'{json["height"]/10} m',
+                            f'{json["weight"]/10} kg']
+         
         #Abilities
         pokedex['abilities'] = []
         for abi in json['abilities']:
@@ -167,8 +170,8 @@ class Pokedex_infos(Saver):
     def get_gender(self):
         #Genders
         dict_genders = {
-            1: 'M',
-            2: 'F'
+            1: 'F',
+            2: 'M'
         }
         
         #Catch Gender
@@ -176,6 +179,7 @@ class Pokedex_infos(Saver):
         for i in range(1,3):
             #Json
             gender_json = requests.get(f'https://pokeapi.co/api/v2/gender/{i}/').json()
+            
             
             #Catcher
             for pokemon in gender_json['pokemon_species_details']:
@@ -222,31 +226,31 @@ class Pokedex_infos(Saver):
         return damages_defenses
     
     def evolution_chain(self):
+        #GET evolution link
         res = requests.get(f'https://pokeapi.co/api/v2/pokemon-species/{self.poke_id}/').json()
+        #GET evolution
         evo_res = requests.get(res["evolution_chain"]['url']).json()
         
         evo = []
         chain = evo_res['chain']
-        if 'envolves_to' in chain:
-            print('esdrvrever')
-        while 'evolves_to' in chain:
+        while 'evolves_to' in evo_res['chain']:
             name = chain['species']['name'].capitalize()
             
+            #Save evolution name
             if name == self.poke_name:
                 evo.append(name.upper())
             else:
                 evo.append(name)
+            
+            #Take the next evolution
             chain = chain['evolves_to']
             if not chain:
                 break
             chain = chain[0]
         
         return evo
-            
-            
-for pokemon in nomes_pokemon:
-    Pokemon(pokemon)
 
+Pokemon(input('Insira o ID ou Nome do pokemon: '))
 
 print('exiting...')
 time.sleep(3)
