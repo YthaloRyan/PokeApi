@@ -87,7 +87,6 @@ class Pokemon:
             os.mkdir(poke_folder)
             
               
-    
     def get_infos(self):
         #Get informations from the api
         try:
@@ -111,7 +110,6 @@ class Saver(Pokemon):
         Saver.make_infos(self)
         Saver.save_infos(self)
         
-    
     
     def save_infos(self):
         poke_folder = self.poke_folder
@@ -141,7 +139,6 @@ class Saver(Pokemon):
         #Height and Weight
         pokedex['infos'] = [f'{json["height"]/10} m',
                             f'{json["weight"]/10} kg']
-         
         #Abilities
         pokedex['abilities'] = []
         for abi in json['abilities']:
@@ -170,8 +167,7 @@ class Pokedex_infos(Saver):
     def get_gender(self):
         #Genders
         dict_genders = {
-            1: 'F',
-            2: 'M'
+            1: 'F', 2: 'M'
         }
         
         #Catch Gender
@@ -179,7 +175,6 @@ class Pokedex_infos(Saver):
         for i in range(1,3):
             #Json
             gender_json = requests.get(f'https://pokeapi.co/api/v2/gender/{i}/').json()
-            
             
             #Catcher
             for pokemon in gender_json['pokemon_species_details']:
