@@ -1,0 +1,53 @@
+{
+    "name": "Pikachu",
+    "infos": [
+        "0.4 m",
+        "6.0 kg"
+    ],
+    "abilities": [
+        {
+            "name": "static",
+            "url": "https://pokeapi.co/api/v2/ability/9/"
+        }
+    ],
+    "gender": "F/M",
+    "types": [
+        "Electric"
+    ],
+    "defensive_offensive": {
+        "defensive": {
+            "double_damage_from": [
+                [
+                    "Ground"
+                ]
+            ],
+            "half_damage_from": [
+                [
+                    "Flying",
+                    "Steel",
+                    "Electric"
+                ]
+            ]
+        },
+        "offensive": {
+            "double_damage_to": [
+                [
+                    "Flying",
+                    "Water"
+                ]
+            ],
+            "half_damage_to": [
+                [
+                    "Grass",
+                    "Electric",
+                    "Dragon"
+                ]
+            ]
+        }
+    },
+    "evolutions": [
+        "Pichu",
+        "PIKACHU",
+        "Raichu"
+    ]
+}
